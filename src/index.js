@@ -1,5 +1,4 @@
-import initMongoConnection from '../src/db/initMongoConnection.js';
-// src/index.js
+import initMongoConnection from './db/initMongoConnection.mjs';
 
 const startServer = async () => {
   await initMongoConnection();
@@ -9,4 +8,3 @@ const startServer = async () => {
 };
 
 startServer();
-

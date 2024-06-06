@@ -1,7 +1,8 @@
+// src/db/initMongoConnection.mjs
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-// Load environment variables from .env file
+// Завантаження змінних оточення з файлу .env
 dotenv.config();
 
 const initMongoConnection = async () => {
@@ -21,4 +22,4 @@ const initMongoConnection = async () => {
   }
 };
 
-module.exports = initMongoConnection;
+export default initMongoConnection;
