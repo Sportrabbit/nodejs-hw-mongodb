@@ -3,8 +3,8 @@ import cors from 'cors';
 import pino from 'pino-http';
 import mongoose from 'mongoose';
 
-import { env } from './utils/env';
-import { getAllContacts, getContactById } from './services/contacts';
+import { env } from './utils/env.js';
+import { getAllContacts, getContactById } from './services/contacts.js';
 
 const PORT = Number(env('PORT', 3000));
 
