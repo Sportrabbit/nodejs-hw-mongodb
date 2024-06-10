@@ -4,14 +4,9 @@ import { setupServer } from './server.js';
 const startServer = async () => {
   try {
     await initMongoConnection();
+    setupServer();
     console.log('З’єднання з MongoDB встановлено');
 
-    const server = setupServer();
-    const port = process.env.PORT || 3001;
-
-    server.listen(port, () => {
-      console.log(`Сервер запущено на порті ${port}`);
-    });
   } catch (error) {
     console.error('Помилка при запуску сервера:', error);
   }
