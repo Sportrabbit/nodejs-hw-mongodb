@@ -7,7 +7,7 @@ const startServer = async () => {
     console.log('З’єднання з MongoDB встановлено');
 
     const server = setupServer();
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 3001;
 
     server.listen(port, () => {
       console.log(`Сервер запущено на порті ${port}`);
