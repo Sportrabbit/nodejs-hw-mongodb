@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import CreateError from 'http-errors';
-import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from './services/contacts.js';
+import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from '../services/contacts.js';
 
 export const getAllContactsControllers = async (req, res, next) => {
     try {
