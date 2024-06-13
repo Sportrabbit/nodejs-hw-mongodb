@@ -21,7 +21,7 @@ export const getContactByIdControllers = async (req, res, next) => {
     try {
         const contactId = req.params.contactId;
         if (!mongoose.Types.ObjectId.isValid(contactId)) {
-            throw CreateError(404, 'Invalid contact ID');
+            throw CreateError(400, 'Invalid contact ID');
         }
 
         const contact = await getContactById(contactId);
@@ -66,7 +66,7 @@ export const updateContactControllers = async (req, res, next) => {
         const {name, phoneNumber, email, isFavourite, contactType } = req.body;
 
         if (!mongoose.Types.ObjectId.isValid(contactId)) {
-            throw CreateError(404, 'Invalid contact ID');
+            throw CreateError(400, 'Invalid contact ID');
         }
 
         const updatedContact = await updateContact(contactId, {name, phoneNumber, email, isFavourite, contactType});
@@ -90,7 +90,7 @@ export const deleteContactControllers = async (req, res, next) => {
         const contactId = req.params.contactId;
 
         if (!mongoose.Types.ObjectId.isValid(contactId)) {
-            throw CreateError(404, 'Invalid contact ID');
+            throw CreateError(400, 'Invalid contact ID');
         }
 
         const deletedContact = await deleteContact(contactId);
