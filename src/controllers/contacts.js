@@ -4,7 +4,12 @@ import { getAllContacts, getContactById, createContact, updateContact, deleteCon
 
 export const getAllContactsControllers = async (req, res, next) => {
     try {
-        const contacts = await getAllContacts();
+        const {page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
+        const filter = {};
+        if (type) filter.contactType = type;
+        if (isFavourite !== undefined) filter.isFavourite = isFavourite === 'true';
+
+        const contacts = await getAllContacts(Number(page), Number(perPage), sortBy, sortOrder, filter);
         console.log('Contacts:', contacts);
 
         res.status(200).json({
