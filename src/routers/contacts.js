@@ -1,10 +1,14 @@
 import express from 'express';
-
-import { getAllContactsControllers, getContactByIdControllers, createContactControllers,
-    updateContactControllers, deleteContactControllers} from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { validateBody } from '../middleware/validateBody.js';
 import { contactSchema, updateContactSchema } from '../validation/contactValidation.js';
-import { validateBody } from '../middlewares/validateBody.js';
+import {
+    getAllContactsControllers,
+    getContactByIdControllers,
+    createContactControllers,
+    updateContactControllers,
+    deleteContactControllers
+} from '../controllers/contacts.js';
 
 const router = express.Router();
 

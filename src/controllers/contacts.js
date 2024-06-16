@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import CreateError from 'http-errors';
 import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from '../services/contacts.js';
 
-export const getAllContactsController = async (req, res, next) => {
+export const getAllContactsControllers = async (req, res, next) => {
     try {
         const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
 
