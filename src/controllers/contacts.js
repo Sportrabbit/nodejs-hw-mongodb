@@ -2,34 +2,34 @@ import mongoose from 'mongoose';
 import CreateError from 'http-errors';
 import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from '../services/contacts.js';
 
-export const getAllContactsControllers = async (req, res, next) => {
+export const getAllContactsController = async (req, res, next) => {
     try {
-        const {page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
+        const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
 
         const filter = {};
         if (type) filter.contactType = type;
         if (isFavourite !== undefined) filter.isFavourite = isFavourite === 'true';
 
-        const contacts = await getAllContacts(Number(page), Number(perPage), sortBy, sortOrder, filter);
-        console.log('Contacts:', contacts);
+        const result = await getAllContacts(Number(page), Number(perPage), sortBy, sortOrder, filter);
 
         res.status(200).json({
             status: 200,
             message: 'Successfully found contacts!',
             data: {
-                data: contacts.data,
-                page: contacts.page,
-                perPage: contacts.perPage,
-                totalItems: contacts.totalItems,
-                totalPages: contacts.totalPages,
-                hasPreviousPage: contacts.hasPreviousPage,
-                hasNextPage: contacts.hasNextPage,
+                data: result.data,
+                page: result.page,
+                perPage: result.perPage,
+                totalItems: result.totalItems,
+                totalPages: result.totalPages,
+                hasPreviousPage: result.hasPreviousPage,
+                hasNextPage: result.hasNextPage
             }
         });
     } catch (error) {
         next(error);
     }
 };
+
 
 export const getContactByIdControllers = async (req, res, next) => {
     try {
