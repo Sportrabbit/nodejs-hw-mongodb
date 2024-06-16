@@ -5,6 +5,7 @@ import { getAllContacts, getContactById, createContact, updateContact, deleteCon
 export const getAllContactsControllers = async (req, res, next) => {
     try {
         const {page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
+
         const filter = {};
         if (type) filter.contactType = type;
         if (isFavourite !== undefined) filter.isFavourite = isFavourite === 'true';
@@ -15,7 +16,15 @@ export const getAllContactsControllers = async (req, res, next) => {
         res.status(200).json({
             status: 200,
             message: 'Successfully found contacts!',
-            data: contacts,
+            data: {
+                data: contacts.data,
+                page: contacts.page,
+                perPage: contacts.perPage,
+                totalItems: contacts.totalItems,
+                totalPages: contacts.totalPages,
+                hasPreviousPage: contacts.hasPreviousPage,
+                hasNextPage: contacts.hasNextPage,
+            }
         });
     } catch (error) {
         next(error);
