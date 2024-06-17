@@ -24,7 +24,7 @@ export const setupServer = () => {
         }),
     );
 
-    app.use('/', contactsRouter);
+    app.use('/api', contactsRouter);
 
     app.use('*', notFoundHandler);
 
@@ -33,4 +33,8 @@ export const setupServer = () => {
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     });
+
+    mongoose.connect(env('MONGODB_URI'), { useNewUrlParser: true, useUnifiedTopology: true })
+        .then(() => console.log('Mongo connection successfully established!'))
+        .catch(err => console.error('Failed to connect to MongoDB', err));
 };
