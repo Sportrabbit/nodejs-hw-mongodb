@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import CreateError from 'http-errors';
 import { User } from '../validation/userValidation.js';
