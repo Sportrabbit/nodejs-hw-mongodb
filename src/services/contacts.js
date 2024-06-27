@@ -18,8 +18,8 @@ export const getAllContacts = async (page = 1, perPage = 10, sortBy = 'name', so
     };
 };
 
-export const getContactById = async (contactId) => {
-    const contact = await Contact.findById(contactId);
+export const getContactById = async (filter) => {
+    const contact = await Contact.findOne(filter);
     return contact;
 };
 
@@ -29,12 +29,12 @@ export const createContact = async (contactData) => {
     return contact;
 };
 
-export const updateContact = async (contactId, updateData) => {
-    const updatedContact = await Contact.findByIdAndUpdate(contactId, updateData, {new: true});
+export const updateContact = async (filter, updateData) => {
+    const updatedContact = await Contact.findByIdAndUpdate(filter, updateData, {new: true});
     return updatedContact;
 };
 
-export const deleteContact = async (contactId) => {
-    const deletedContact = await Contact.findByIdAndDelete(contactId);
+export const deleteContact = async (filter) => {
+    const deletedContact = await Contact.findByIdAndDelete(filter);
     return deletedContact;
 }

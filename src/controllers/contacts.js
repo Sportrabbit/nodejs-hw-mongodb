@@ -6,7 +6,7 @@ export const getAllContactsControllers = async (req, res, next) => {
     try {
         const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
 
-        const filter = {};
+        const filter = {userId: req.user._id};
         if (type) filter.contactType = type;
         if (isFavourite !== undefined) filter.isFavourite = isFavourite === 'true';
 
@@ -38,7 +38,7 @@ export const getContactByIdControllers = async (req, res, next) => {
             throw CreateError(400, 'Invalid contact ID');
         }
 
-        const contact = await getContactById(contactId);
+        const contact = await getContactById({_id: contactId, userId: req.user._id});
 
         if (!contact) {
             throw CreateError(404, 'Contact not found')
@@ -62,7 +62,7 @@ export const createContactControllers = async (req, res, next) => {
             throw CreateError(400, 'Name and phone number are required');
         }
 
-        const newContact = await createContact({name, phoneNumber, email, isFavourite, contactType});
+        const newContact = await createContact({name, phoneNumber, email, isFavourite, contactType, userId: req.user._id});
 
         res.status(201).json({
             status: 201,
@@ -83,7 +83,7 @@ export const updateContactControllers = async (req, res, next) => {
             throw CreateError(400, 'Invalid contact ID');
         }
 
-        const updatedContact = await updateContact(contactId, {name, phoneNumber, email, isFavourite, contactType});
+        const updatedContact = await updateContact({ _id: contactId, userId: req.user._id }, {name, phoneNumber, email, isFavourite, contactType});
 
         if (!updatedContact) {
             throw CreateError(404, 'Contact not found')
@@ -107,7 +107,7 @@ export const deleteContactControllers = async (req, res, next) => {
             throw CreateError(400, 'Invalid contact ID');
         }
 
-        const deletedContact = await deleteContact(contactId);
+        const deletedContact = await deleteContact({ _id: contactId, userId: req.user._id });
 
         if (!deletedContact) {
             throw CreateError(404, 'Contact not found')
@@ -117,6 +117,4 @@ export const deleteContactControllers = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-
-
-}
+};
