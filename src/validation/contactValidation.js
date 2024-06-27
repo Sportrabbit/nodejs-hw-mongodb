@@ -1,13 +1,12 @@
-import Joi from "joi";
-import mongoose from "mongoose";
+import Joi from 'joi';
 
-export const contactSchema = new mongoose.Schema({
+export const contactSchema = Joi.object({
     name: Joi.string().min(3).max(20).required(),
     phoneNumber: Joi.string().min(3).max(20).required(),
     email: Joi.string().email().optional(),
     isFavourite: Joi.boolean().optional(),
     contactType: Joi.string().optional(),
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: Joi.string().required(),
 });
 
 export const updateContactSchema = Joi.object({

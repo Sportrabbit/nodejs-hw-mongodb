@@ -1,9 +1,9 @@
-import Joi, { date } from "joi";
+import Joi from 'joi';
 
 export const userSchema = Joi.object({
     name: Joi.string().required(),
-    email: Joi.string().email().unique().required(),
+    email: Joi.string().email().required(),
     password: Joi.string().required(),
-    createdAt: Joi.Date().default(Date.now),
-    updatedAt: Joi.Date().default(Date.now),
+    createdAt: Joi.date().default(() => new Date(), 'time of creation'),
+    updatedAt: Joi.date().default(() => new Date(), 'time of update'),
 });

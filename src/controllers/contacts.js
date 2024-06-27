@@ -4,9 +4,10 @@ import { getAllContacts, getContactById, createContact, updateContact, deleteCon
 
 export const getAllContactsControllers = async (req, res, next) => {
     try {
+        const userId = req.user._id;
         const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
 
-        const filter = {userId: req.user._id};
+        const filter = {userId};
         if (type) filter.contactType = type;
         if (isFavourite !== undefined) filter.isFavourite = isFavourite === 'true';
 
@@ -34,11 +35,13 @@ export const getAllContactsControllers = async (req, res, next) => {
 export const getContactByIdControllers = async (req, res, next) => {
     try {
         const contactId = req.params.contactId;
+        const userId = req.user._id;
+
         if (!mongoose.Types.ObjectId.isValid(contactId)) {
             throw CreateError(400, 'Invalid contact ID');
         }
 
-        const contact = await getContactById({_id: contactId, userId: req.user._id});
+        const contact = await getContactById(contactId, userId);
 
         if (!contact) {
             throw CreateError(404, 'Contact not found')
@@ -57,12 +60,13 @@ export const getContactByIdControllers = async (req, res, next) => {
 export const createContactControllers = async (req, res, next) => {
     try {
         const {name, phoneNumber, email, isFavourite, contactType } = req.body;
+        const userId = req.user._id;
 
         if (!name || !phoneNumber) {
             throw CreateError(400, 'Name and phone number are required');
         }
 
-        const newContact = await createContact({name, phoneNumber, email, isFavourite, contactType, userId: req.user._id});
+        const newContact = await createContact({name, phoneNumber, email, isFavourite, contactType, userId});
 
         res.status(201).json({
             status: 201,
@@ -78,12 +82,13 @@ export const updateContactControllers = async (req, res, next) => {
     try {
         const contactId = req.params.contactId;
         const {name, phoneNumber, email, isFavourite, contactType } = req.body;
+        const userId = req.user._id;
 
         if (!mongoose.Types.ObjectId.isValid(contactId)) {
             throw CreateError(400, 'Invalid contact ID');
         }
 
-        const updatedContact = await updateContact({ _id: contactId, userId: req.user._id }, {name, phoneNumber, email, isFavourite, contactType});
+        const updatedContact = await updateContact(contactId, userId, {name, phoneNumber, email, isFavourite, contactType});
 
         if (!updatedContact) {
             throw CreateError(404, 'Contact not found')
@@ -102,12 +107,13 @@ export const updateContactControllers = async (req, res, next) => {
 export const deleteContactControllers = async (req, res, next) => {
     try {
         const contactId = req.params.contactId;
+        const userId = req.user._id;
 
         if (!mongoose.Types.ObjectId.isValid(contactId)) {
             throw CreateError(400, 'Invalid contact ID');
         }
 
-        const deletedContact = await deleteContact({ _id: contactId, userId: req.user._id });
+        const deletedContact = await deleteContact(contactId, userId);
 
         if (!deletedContact) {
             throw CreateError(404, 'Contact not found')
