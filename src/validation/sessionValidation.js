@@ -1,9 +1,10 @@
-import Joi, { date } from "joi";
+import Joi from 'joi';
 
-export const userSchema = Joi.object({
+const { date } = Joi;
+
+export const Session = Joi.object({
     userId: Joi.string().required(),
-    accessToken: Joi.string().required(),
-    refreshToken: Joi.string().required(),
-    accessTokenValidUntil: Joi.Date().required(),
-    updatedAt: Joi.Date().required(),
+    sessionId: Joi.string().required(),
+    createdAt: date().default(Date.now),
+    updatedAt: date().default(Date.now),
 });
