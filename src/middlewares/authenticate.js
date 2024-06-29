@@ -1,5 +1,4 @@
-import jwt from 'jsonwebtoken';
-import CreateError from 'http-errors';
+import createHttpError from 'http-errors';
 import { User } from '../validation/userValidation.js';
 
 const SECRET_KEY = process.env.SECRET_KEY;
