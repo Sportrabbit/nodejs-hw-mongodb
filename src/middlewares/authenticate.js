@@ -5,6 +5,7 @@ import { Session } from '../validation/sessionValidation.js';
 const SECRET_KEY = process.env.SECRET_KEY;
 
 export const authenticate = async (req, res, next) => {
+  try {
     const authHeader = req.get('Authorization');
     console.log('Authorization Header:', authHeader);
 
@@ -13,8 +14,7 @@ export const authenticate = async (req, res, next) => {
       return;
     }
 
-    const bearer = authHeader.split(' ')[0];
-    const token = authHeader.split(' ')[1];
+    const [bearer, token] = authHeader.split(' ');
     console.log('Bearer:', bearer);
     console.log('Token:', token);
 
@@ -31,15 +31,16 @@ export const authenticate = async (req, res, next) => {
       return;
     }
 
-    const isAccessTokenExpired =
-      new Date() > new Date(session.accessTokenValidUntil);
+    const isAccessTokenExpired = new Date() > new Date(session.accessTokenValidUntil);
+    console.log('Is Access Token Expired:', isAccessTokenExpired);
 
     if (isAccessTokenExpired) {
       next(createHttpError(401, 'Access token expired'));
+      return;
     }
 
     const user = await Users.findById(session.userId);
-    console.log('User:', Users);
+    console.log('User:', user);
 
     if (!user) {
       next(createHttpError(401));
@@ -47,8 +48,9 @@ export const authenticate = async (req, res, next) => {
     }
 
     req.user = user;
-
     next();
+  } catch (error) {
+    console.error('Authentication error:', error);
+    next(error);
+  }
 };
-
-
