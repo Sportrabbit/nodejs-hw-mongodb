@@ -14,7 +14,7 @@ const generateTokens = (userId) => {
   return { accessToken, refreshToken };
 };
 
-export const registerUserController = async (req, res) => {
+export const registerUserController = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
@@ -31,9 +31,9 @@ export const registerUserController = async (req, res) => {
         message: 'Successfully registered a user!',
         data: { id: newUser._id, name: newUser.name, email: newUser.email },
     });
-} catch (error) {
+  } catch (error) {
     next(error);
-}
+  }
 };
 
 export const loginUserController = async (req, res, next) => {

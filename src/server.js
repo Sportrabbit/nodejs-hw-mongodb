@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import mongoose from 'mongoose';
 
 import { env } from './utils/env.js';
 import contactsRouter from './routers/contacts.js';
