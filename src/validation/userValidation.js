@@ -1,7 +1,12 @@
-import Joi from 'joi';
+import { model, Schema } from 'mongoose';
 
-export const User = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-});
+const usersSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+  },
+  { timestamps: true, versionKey: false },
+);
+
+export const Users = model('users', usersSchema);

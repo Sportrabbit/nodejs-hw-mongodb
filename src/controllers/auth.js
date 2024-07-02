@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import CreateError from 'http-errors';
-import { User } from '../validation/userValidation.js';
+import { Users } from '../validation/userValidation.js';
 import { Session } from '../validation/sessionValidation.js';
 
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -18,13 +18,13 @@ export const registerUserController = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await Users.findOne({ email });
     if (existingUser) {
         throw CreateError(409, 'Email in use');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ name, email, password: hashedPassword });
+    const newUser = await Users.create({ name, email, password: hashedPassword });
 
     res.status(201).json({
         status: 201,
@@ -40,10 +40,10 @@ export const loginUserController = async (req, res, next) => {
   try {
     const {email, password} = (req.body);
 
-    const user = await User.findOne({ email });
+    const user = await Users.findOne({ email });
 
     if (!user || await bcrypt.compare(password, user.password)) {
-      throw createHttpError(401, 'Invalid email or password');
+      throw CreateError(401, 'Invalid email or password');
     }
 
     await Session.deleteMany({ userId: user._id });
@@ -78,13 +78,13 @@ export const refreshTokenController = async (req, res, next) => {
     const { refreshToken } = req.cookies;
 
     if(!refreshToken) {
-      throw createHttpError(401, 'Refresh token missing!');
+      throw CreateError(401, 'Refresh token missing!');
     }
 
     const session = await Session.findOne({ refreshToken });
 
     if(!session || session.refreshTokenValidUntil < new Date()) {
-      throw createHttpError(401, 'Refresh token invalid or expired!');
+      throw CreateError(401, 'Refresh token invalid or expired!');
     }
 
     await Session.deleteOne({ _id: sessionId });

@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import pino from 'pino-http';
 
@@ -15,6 +16,7 @@ export const setupServer = () => {
 
     app.use(express.json());
     app.use(cors());
+    app.use(cookieParser());
 
     app.use(
         pino({

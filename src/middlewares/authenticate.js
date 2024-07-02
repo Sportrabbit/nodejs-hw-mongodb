@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { User } from '../validation/userValidation.js';
+import { Users } from '../validation/userValidation.js';
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -33,7 +33,7 @@ export const authenticate = async (req, res, next) => {
       next(createHttpError(401, 'Access token expired'));
     }
 
-    const user = await User.findById(session.userId);
+    const user = await Users.findById(session.userId);
 
     if (!user) {
       next(createHttpError(401));
