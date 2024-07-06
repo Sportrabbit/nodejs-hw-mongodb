@@ -2,6 +2,8 @@ import createHttpError from 'http-errors';
 import { User } from '../validation/userValidation.js';
 import bcrypt from 'bcrypt';
 import handlebars from 'handlebars';
+import jwt from 'jsonwebtoken';
+import path from 'path';
 import fs from 'fs';
 import { sendEmail } from '../utils/sendEmail.js';
 import { Session } from '../validation/sessionValidation.js';
