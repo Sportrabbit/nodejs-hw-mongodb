@@ -9,4 +9,4 @@ const usersSchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
-export const Users = model('users', usersSchema);
+export const User = model('users', usersSchema);

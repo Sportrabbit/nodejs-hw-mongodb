@@ -1,4 +1,5 @@
 import Contact from '../db/contact.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getAllContacts = async (page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', filter = {}) => {
     const skip = (page - 1) * perPage;
@@ -25,9 +26,18 @@ export const getContactById = async (userId, contactId) => {
     return contact;
 };
 
-export const createContact = async (userId, contactData) => {
-    const contact = new Contact({ ...contactData, userId });
-    await contact.save();
+export const createContact = async ({ photo, ...contactData }, userId) => {
+    const url = await saveFileToCloudinary(photo);
+
+    if (photo) {
+        photoUrl = await uploadToCloudinary(photo);
+    }
+
+    const contact = await Contact.create({
+        ...contactData,
+        conyactId: userId,
+        photoUrl: url,
+    });
     return contact;
 };
 

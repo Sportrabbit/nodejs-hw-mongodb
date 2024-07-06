@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { Users } from '../validation/userValidation.js';
+import { User } from '../validation/userValidation.js';
 import { Session } from '../validation/sessionValidation.js';
 
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -39,7 +39,7 @@ export const authenticate = async (req, res, next) => {
       return;
     }
 
-    const user = await Users.findById(session.userId);
+    const user = await User.findById(session.userId);
     console.log('User:', user);
 
     if (!user) {

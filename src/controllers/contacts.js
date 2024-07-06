@@ -59,23 +59,18 @@ export const getContactByIdControllers = async (req, res, next) => {
 
 export const createContactControllers = async (req, res, next) => {
     try {
-        const {name, phoneNumber, email, isFavourite, contactType } = req.body;
-        const userId = req.user._id;
+        const { body, file } = req;
 
-        if (!name || !phoneNumber) {
-            throw CreateError(400, 'Name and phone number are required');
-        }
-
-        const newContact = await createContact({name, phoneNumber, email, isFavourite, contactType, userId});
+        const contact = await createContact({ ...body, photo: file }, req.user._id);
 
         res.status(201).json({
-            status: 201,
-            message: 'Successfully created a contact!',
-            data: newContact,
+          status: 201,
+          message: `Successfully created a contact!`,
+          data: contact,
         });
     } catch (error) {
         next(error);
-    }
+    };
 };
 
 export const updateContactControllers = async (req, res, next) => {

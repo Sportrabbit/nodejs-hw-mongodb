@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import CreateError from 'http-errors';
-import { Users } from '../validation/userValidation.js';
+import { User } from '../validation/userValidation.js';
 import { Session } from '../validation/sessionValidation.js';
+import { requestResetToken } from '../services/auth.js';
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const ACCESS_TOKEN_LIFETIME = 15 * 60 * 1000; // 15 хвилин
@@ -18,13 +19,13 @@ export const registerUserController = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    const existingUser = await Users.findOne({ email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
         throw CreateError(409, 'Email in use');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await Users.create({ name, email, password: hashedPassword });
+    const newUser = await User.create({ name, email, password: hashedPassword });
 
     res.status(201).json({
         status: 201,
@@ -40,7 +41,7 @@ export const loginUserController = async (req, res, next) => {
   try {
     const {email, password} = (req.body);
 
-    const user = await Users.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user || await bcrypt.compare(password, user.password)) {
       throw CreateError(401, 'Invalid email or password');
@@ -124,3 +125,23 @@ export const logoutUserController = async (req, res) => {
 
     res.status(204).send();
 };
+
+export const requestResetEmailController = async (req, res) => {
+  await requestResetToken(req.body.email);
+
+  res.json({
+    status: 200,
+    message: "Reset password email has been successfully sent.",
+    data: {},
+  });
+};
+
+export const resetPasswordController = async (req, res) => {
+  await resetPassword(req.body);
+
+  res.json({
+    status: 200,
+    message: "Password has been successfully reset.",
+    data: {},
+});
+}

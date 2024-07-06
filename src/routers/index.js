@@ -6,6 +6,5 @@ const rootRouter = Router();
 
 rootRouter.use('/auth', authRouter);
 rootRouter.use('/contacts', router);
-rootRouter.use('/test', testRouter);
 
 export default rootRouter;
