@@ -4,11 +4,10 @@ import bcrypt from 'bcrypt';
 import handlebars from 'handlebars';
 import jwt from 'jsonwebtoken';
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs/promises';
 import { sendEmail } from '../utils/sendEmail.js';
 import { Session } from '../validation/sessionValidation.js';
 import { EMAIL_VARS, ENV_VARS, TEMPLATES_DIR } from '../constants/index.js';
-import { env } from '../utils/env.js';
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -106,8 +105,8 @@ export const requestResetToken = async (email) => {
   );
 
   const templateSource = (
-    await fs.readFile(resetPasswordTemplatePath)
-  ).toString();
+    await fs.readFile(resetPasswordTemplatePath, 'utf8')
+  );
 
   const template = handlebars.compile(templateSource);
 
