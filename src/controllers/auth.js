@@ -4,6 +4,7 @@ import CreateError from 'http-errors';
 import { User } from '../validation/userValidation.js';
 import { Session } from '../validation/sessionValidation.js';
 import { requestResetToken } from '../services/auth.js';
+import { resetPassword } from '../services/auth.js';
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const ACCESS_TOKEN_LIFETIME = 15 * 60 * 1000; // 15 хвилин

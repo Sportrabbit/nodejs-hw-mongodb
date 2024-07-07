@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import path from 'path';
 import fs from 'fs/promises';
 import { sendEmail } from '../utils/sendEmail.js';
+import { env } from '../utils/env.js';
 import { Session } from '../validation/sessionValidation.js';
 import { EMAIL_VARS, ENV_VARS, TEMPLATES_DIR } from '../constants/index.js';
 
@@ -112,12 +113,12 @@ export const requestResetToken = async (email) => {
 
   const html = template({
     name: user.name,
-    link: `${process.env.FRONTEND_HOST}/reset-password?token=${resetToken}`,
+    link: `${env(ENV_VARS.APP_DOMAIN)}/reset-password?token=${resetToken}`,
   });
 
   try {
     await sendEmail({
-      from: process.env.SMTP_FROM,
+      from: env(EMAIL_VARS.SMTP_FROM),
       to: email,
       subject: 'Password Reset',
       html,
