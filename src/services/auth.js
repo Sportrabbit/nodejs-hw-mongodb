@@ -10,7 +10,7 @@ import { env } from '../utils/env.js';
 import { Session } from '../validation/sessionValidation.js';
 import { EMAIL_VARS, ENV_VARS, TEMPLATES_DIR } from '../constants/index.js';
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const JWT_SECRET = env(ENV_VARS.JWT_SECRET);
 
 export const registerUser = async (payload) => {
   const existingUser = await User.findOne({ email: payload.email });
@@ -33,8 +33,8 @@ export const loginUser = async ({ email, password }) => {
 
   await Session.deleteMany({ userId: user._id });
 
-  const accessToken = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '15m' });
-  const refreshToken = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '30d' });
+  const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '30d' });
 
   await Session.create({
     userId: user._id,

@@ -6,13 +6,13 @@ import { Session } from '../validation/sessionValidation.js';
 import { requestResetToken } from '../services/auth.js';
 import { resetPassword } from '../services/auth.js';
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const JWT_SECRET = process.env.JWT_SECRET;
 const ACCESS_TOKEN_LIFETIME = 15 * 60 * 1000; // 15 хвилин
 const REFRESH_TOKEN_LIFETIME = 30 * 24 * 60 * 60 * 1000; // 30 днів
 
 const generateTokens = (userId) => {
-  const accessToken = jwt.sign({ userId }, SECRET_KEY, { expiresIn: '15m' });
-  const refreshToken = jwt.sign({ userId }, SECRET_KEY, { expiresIn: '30d' });
+  const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '30d' });
   return { accessToken, refreshToken };
 };
 
@@ -44,7 +44,7 @@ export const loginUserController = async (req, res, next) => {
 
     const user = await User.findOne({ email });
 
-    if (!user || await bcrypt.compare(password, user.password)) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       throw CreateError(401, 'Invalid email or password');
     }
 

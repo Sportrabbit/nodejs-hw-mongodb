@@ -22,6 +22,9 @@ const contactSchema = new mongoose.Schema({
         enum: ['work', 'home', 'personal'],
         default: 'personal',
         required: true
+    },
+    photo: {
+        type: String
     }
 }, {
     timestamps: true // Додає поля createdAt і updatedAt
