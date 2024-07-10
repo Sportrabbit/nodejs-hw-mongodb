@@ -16,14 +16,14 @@ const router = express.Router();
 
 router.use(authenticate);
 
-router.get('/contacts', ctrlWrapper(getAllContactsControllers));
+router.get('/', ctrlWrapper(getAllContactsControllers));
 
-router.get('/contacts/:contactId', ctrlWrapper(getContactByIdControllers));
+router.get('/:contactId', ctrlWrapper(getContactByIdControllers));
 
-router.post('/contacts', upload.single('photo'), validateBody(contactSchema), ctrlWrapper(createContactControllers));
+router.post('/', upload.single('photo'), validateBody(contactSchema), ctrlWrapper(createContactControllers));
 
-router.patch('/contacts/:contactId', validateBody(updateContactSchema), ctrlWrapper(updateContactControllers));
+router.patch('/:contactId', validateBody(updateContactSchema), ctrlWrapper(updateContactControllers));
 
-router.delete('/contacts/:contactId', ctrlWrapper(deleteContactControllers));
+router.delete('/:contactId', ctrlWrapper(deleteContactControllers));
 
 export default router;
