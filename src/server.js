@@ -31,6 +31,7 @@ export const setupServer = () => {
     });
 
     app.use('/contacts', contactsRouter);
+
     app.use('/auth', authRouter);
 
     app.use('*', notFoundHandler);
