@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import CreateError from 'http-errors';
+import { updateContactSchema } from '../validation/contactValidation.js';
 import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from '../services/contacts.js';
+import { User } from '../validation/userValidation.js';
+import Contact from '../db/contact.js';
 
 export const getAllContactsControllers = async (req, res, next) => {
     try {
@@ -78,24 +81,44 @@ export const createContactControllers = async (req, res, next) => {
 
 export const updateContactControllers = async (req, res, next) => {
     try {
+        console.log('Entering updateContactControllers');
+
         const contactId = req.params.contactId;
-        const {name, phoneNumber, email, isFavourite, contactType } = req.body;
+        const { name, phoneNumber, email, isFavourite, contactType } = req.body;
         const userId = req.user._id;
         const file = req.file;
 
         console.log('Request params:', req.params);
         console.log('Request body:', req.body);
         console.log('Request file:', req.file);
+        console.log('User ID:', userId);
 
         if (!mongoose.Types.ObjectId.isValid(contactId)) {
+            console.log('Invalid contact ID:', contactId);
             throw CreateError(400, 'Invalid contact ID');
         }
 
+        const contact = await Contact.findOne({ _id: contactId, userId });
+
+        if (!contact) {
+            console.log('Contact not found:', contactId);
+            throw CreateError(404, 'Contact not found');
+        }
+
+        const { error } = updateContactSchema.validate({ name, phoneNumber, email, isFavourite, contactType });
+        if (error) {
+            console.log('Validation error:', error.details[0].message);
+            throw CreateError(400, error.details[0].message);
+        }
+
         const updateData = { name, phoneNumber, email, isFavourite, contactType };
-        const updatedContact = await updateContact(contactId, userId, updateData, file);
+        console.log('Update Data before file processing:', updateData);
+        const updatedContact = await updateContact(userId, contactId, updateData, file);
+        console.log('Update Data after file processing:', updateData);
 
         if (!updatedContact) {
-            throw CreateError(404, 'Contact not found')
+            console.log('Contact not found:', contactId);
+            throw CreateError(404, 'Contact not found');
         }
 
         res.status(200).json({
@@ -104,6 +127,7 @@ export const updateContactControllers = async (req, res, next) => {
             data: updatedContact,
         });
     } catch (error) {
+        console.log('Error:', error.message);
         next(error);
     }
 };

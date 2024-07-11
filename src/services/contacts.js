@@ -46,14 +46,25 @@ export const createContact = async ({ photo, ...contactData }, userId) => {
 };
 
 export const updateContact = async (userId, contactId, updateData, file) => {
+    console.log('Entering updateContact');
+    console.log('Update Data before file processing:', updateData);
+    const contact = await Contact.findOne({ _id: contactId, userId });
+
+    if (!contact) {
+        console.log('Contact not found:', contactId);
+        return null;
+    }
+
     if (file) {
         const photoUrl = await saveFile(file);
         updateData.photo = photoUrl;
     }
+    console.log('Update Data after file processing:', updateData);
 
     const updatedContact = await Contact.findOneAndUpdate(
         { _id: contactId, userId }, updateData, { new: true }
     );
+    console.log('Updated contact:', updatedContact);
     return updatedContact;
 };
 
