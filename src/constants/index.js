@@ -4,6 +4,7 @@ export const ENV_VARS = {
     PORT: 'PORT',
     JWT_SECRET: 'JWT_SECRET',
     APP_DOMAIN: 'APP_DOMAIN',
+    IS_CLOUDINARY_ENABLED: 'IS_CLOUDINARY_ENABLED'
 }
 
 export const EMAIL_VARS = {

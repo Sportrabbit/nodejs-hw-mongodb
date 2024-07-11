@@ -1,5 +1,5 @@
 import Contact from '../db/contact.js';
-import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { saveFile } from '../utils/saveFile.js';
 
 export const getAllContacts = async (page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', filter = {}) => {
     const skip = (page - 1) * perPage;
@@ -27,22 +27,33 @@ export const getContactById = async (userId, contactId) => {
 };
 
 export const createContact = async ({ photo, ...contactData }, userId) => {
-    const url = await saveFileToCloudinary(photo);
+    let photoUrl = '';
 
     if (photo) {
-        photoUrl = await uploadToCloudinary(photo);
+        console.log('Saving file to cloud/local...');
+        photoUrl = await saveFile(photo);
+        console.log('File saved:', photoUrl);
     }
 
     const contact = await Contact.create({
         ...contactData,
-        conyactId: userId,
-        photoUrl: url,
+        contactId: userId,
+        photoUrl,
     });
-    return contact;
+    return{...contact.toObject(),
+        photoUrl,
+    };
 };
 
-export const updateContact = async (userId, contactId, updateData) => {
-    const updatedContact = await Contact.findOneAndUpdate({ _id: contactId, userId }, updateData, { new: true });
+export const updateContact = async (userId, contactId, updateData, file) => {
+    if (file) {
+        const photoUrl = await saveFile(file);
+        updateData.photo = photoUrl;
+    }
+
+    const updatedContact = await Contact.findOneAndUpdate(
+        { _id: contactId, userId }, updateData, { new: true }
+    );
     return updatedContact;
 };
 

@@ -61,6 +61,9 @@ export const createContactControllers = async (req, res, next) => {
     try {
         const { body, file } = req;
 
+        console.log('Received body:', body);
+        console.log('Received file:', file);
+
         const contact = await createContact({ ...body, photo: file }, req.user._id);
 
         res.status(201).json({
@@ -78,12 +81,18 @@ export const updateContactControllers = async (req, res, next) => {
         const contactId = req.params.contactId;
         const {name, phoneNumber, email, isFavourite, contactType } = req.body;
         const userId = req.user._id;
+        const file = req.file;
+
+        console.log('Request params:', req.params);
+        console.log('Request body:', req.body);
+        console.log('Request file:', req.file);
 
         if (!mongoose.Types.ObjectId.isValid(contactId)) {
             throw CreateError(400, 'Invalid contact ID');
         }
 
-        const updatedContact = await updateContact(contactId, userId, {name, phoneNumber, email, isFavourite, contactType});
+        const updateData = { name, phoneNumber, email, isFavourite, contactType };
+        const updatedContact = await updateContact(contactId, userId, updateData, file);
 
         if (!updatedContact) {
             throw CreateError(404, 'Contact not found')
@@ -97,7 +106,7 @@ export const updateContactControllers = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
+};
 
 export const deleteContactControllers = async (req, res, next) => {
     try {
