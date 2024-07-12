@@ -2,23 +2,27 @@ import Contact from '../db/contact.js';
 import createHttpError from 'http-errors';
 import { saveFile } from '../utils/saveFile.js';
 
-export const getAllContacts = async (userId, page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', filter = {}) => {
+export const getAllContacts = async (page, perPage, sortBy, sortOrder, filter) => {
     const skip = (page - 1) * perPage;
-    const sort = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
 
-    filter.userId = userId;
+    const contacts = await Contact.find(filter)
+        .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+        .skip(skip)
+        .limit(perPage);
 
     const totalItems = await Contact.countDocuments(filter);
-    const contacts = await Contact.find(filter).sort(sort).skip(skip).limit(perPage);
+    const totalPages = Math.ceil(totalItems / perPage);
+    const hasPreviousPage = page > 1;
+    const hasNextPage = page < totalPages;
 
     return {
         data: contacts,
         page,
         perPage,
         totalItems,
-        totalPages: Math.ceil(totalItems / perPage),
-        hasPreviousPage: page > 1,
-        hasNextPage: page * perPage < totalItems
+        totalPages,
+        hasPreviousPage,
+        hasNextPage,
     };
 };
 
