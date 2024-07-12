@@ -37,10 +37,11 @@ export const createContact = async ({ photo, ...contactData }, userId) => {
 
     const contact = await Contact.create({
         ...contactData,
-        contactId: userId,
-        photoUrl,
+        userId: userId,
+        photoUrl: photoUrl,
     });
-    return{...contact.toObject(),
+    return {
+        ...contact.toObject(),
         photoUrl,
     };
 };

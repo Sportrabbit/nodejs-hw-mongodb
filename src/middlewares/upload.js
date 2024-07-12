@@ -1,4 +1,5 @@
 import multer from 'multer';
+import path from 'path';
 import { TEMP_UPLOAD_DIR } from '../constants/index.js';
 
 const storage = multer.diskStorage({
