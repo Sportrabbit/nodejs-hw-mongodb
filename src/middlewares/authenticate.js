@@ -2,8 +2,6 @@ import createHttpError from 'http-errors';
 import { User } from '../validation/userValidation.js';
 import { Session } from '../validation/sessionValidation.js';
 
-const SECRET_KEY = process.env.SECRET_KEY;
-
 export const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.get('Authorization');

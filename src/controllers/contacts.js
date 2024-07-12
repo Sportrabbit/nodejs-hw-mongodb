@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import CreateError from 'http-errors';
 import { updateContactSchema } from '../validation/contactValidation.js';
 import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from '../services/contacts.js';
-import { User } from '../validation/userValidation.js';
 import Contact from '../db/contact.js';
 
 export const getAllContactsControllers = async (req, res, next) => {
@@ -47,7 +46,7 @@ export const getContactByIdControllers = async (req, res, next) => {
         const contact = await getContactById(contactId, userId);
 
         if (!contact) {
-            throw CreateError(404, 'Contact not found')
+            throw CreateError(404, 'Contact not found');
         }
 
         res.status(200).json({
@@ -144,7 +143,7 @@ export const deleteContactControllers = async (req, res, next) => {
         const deletedContact = await deleteContact(contactId, userId);
 
         if (!deletedContact) {
-            throw CreateError(404, 'Contact not found')
+            throw CreateError(404, 'Contact not found');
         }
 
         res.status(204).send();

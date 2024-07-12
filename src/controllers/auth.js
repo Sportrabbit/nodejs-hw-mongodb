@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import CreateError from 'http-errors';
+import createError from 'http-errors';
 import { User } from '../validation/userValidation.js';
+import { logoutUser } from '../services/auth.js';
 import { Session } from '../validation/sessionValidation.js';
 import { requestResetToken } from '../services/auth.js';
 import { resetPassword } from '../services/auth.js';
@@ -22,7 +23,7 @@ export const registerUserController = async (req, res, next) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-        throw CreateError(409, 'Email in use');
+        throw createError(409, 'Email in use');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,7 +46,7 @@ export const loginUserController = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw CreateError(401, 'Invalid email or password');
+      throw createError(401, 'Invalid email or password');
     }
 
     await Session.deleteMany({ userId: user._id });
@@ -67,7 +68,7 @@ export const loginUserController = async (req, res, next) => {
       status: 200,
       message: 'Successfully logged in an user!',
       data: {accessToken},
-    })
+    });
 
   } catch (error) {
     next(error);
@@ -80,23 +81,23 @@ export const refreshTokenController = async (req, res, next) => {
     const { refreshToken } = req.cookies;
 
     if(!refreshToken) {
-      throw CreateError(401, 'Refresh token missing!');
+      throw createError(401, 'Refresh token missing!');
     }
 
     const session = await Session.findOne({ refreshToken });
 
     if(!session || session.refreshTokenValidUntil < new Date()) {
-      throw CreateError(401, 'Refresh token invalid or expired!');
+      throw createError(401, 'Refresh token invalid or expired!');
     }
 
-    await Session.deleteOne({ _id: sessionId });
+    await Session.deleteOne({ _id: session._id });
 
-    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user._id);
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(session.userId);
     const accessTokenValidUntil = new Date(Date.now() + ACCESS_TOKEN_LIFETIME);
     const refreshTokenValidUntil = new Date(Date.now() + REFRESH_TOKEN_LIFETIME);
 
     await Session.create({
-      userId: user._id,
+      userId: session.userId,
       accessToken,
       refreshToken: newRefreshToken,
       accessTokenValidUntil,
@@ -145,4 +146,4 @@ export const resetPasswordController = async (req, res) => {
     message: "Password has been successfully reset.",
     data: {},
 });
-}
+};

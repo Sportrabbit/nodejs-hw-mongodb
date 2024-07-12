@@ -12,6 +12,18 @@ import { EMAIL_VARS, ENV_VARS, TEMPLATES_DIR } from '../constants/index.js';
 
 const JWT_SECRET = env(ENV_VARS.JWT_SECRET);
 
+const createSession = (userId) => {
+  const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '30d' });
+
+  return {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes from now
+    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+  };
+};
+
 export const registerUser = async (payload) => {
   const existingUser = await User.findOne({ email: payload.email });
     if (existingUser) {
@@ -33,16 +45,17 @@ export const loginUser = async ({ email, password }) => {
 
   await Session.deleteMany({ userId: user._id });
 
-  const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '15m' });
-  const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '30d' });
+  const session = createSession(user._id);
 
   await Session.create({
     userId: user._id,
-    accessToken,
-    refreshToken,
+    accessToken: session.accessToken,
+    refreshToken: session.refreshToken,
+    accessTokenValidUntil: session.accessTokenValidUntil,
+    refreshTokenValidUntil: session.refreshTokenValidUntil,
   });
 
-  return { accessToken, refreshToken };
+  return { accessToken: session.accessToken, refreshToken: session.refreshToken };
 };
 
 export const refreshSession = async ({ sessionId, sessionToken }) => {

@@ -1,7 +1,7 @@
 import Contact from '../db/contact.js';
 import { saveFile } from '../utils/saveFile.js';
 
-export const getAllContacts = async (page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', filter = {}) => {
+export const getAllContacts = async (userId, page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', filter = {}) => {
     const skip = (page - 1) * perPage;
     const sort = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
 
