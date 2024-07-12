@@ -1,4 +1,5 @@
 import Contact from '../db/contact.js';
+import createHttpError from 'http-errors';
 import { saveFile } from '../utils/saveFile.js';
 
 export const getAllContacts = async (userId, page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', filter = {}) => {
@@ -46,27 +47,20 @@ export const createContact = async ({ photo, ...contactData }, userId) => {
     };
 };
 
-export const updateContact = async (userId, contactId, updateData, file) => {
-    console.log('Entering updateContact');
-    console.log('Update Data before file processing:', updateData);
-    const contact = await Contact.findOne({ _id: contactId, userId });
+export const updateContact = async (req, res, next) => {
+    const { contactId } = req.params;
+    const result = await updateContact(contactId, req.body);
 
-    if (!contact) {
-        console.log('Contact not found:', contactId);
-        return null;
+    if (!result) {
+      next(createHttpError(404, 'Contact not found'));
+      return;
     }
 
-    if (file) {
-        const photoUrl = await saveFile(file);
-        updateData.photo = photoUrl;
-    }
-    console.log('Update Data after file processing:', updateData);
-
-    const updatedContact = await Contact.findOneAndUpdate(
-        { _id: contactId, userId }, updateData, { new: true }
-    );
-    console.log('Updated contact:', updatedContact);
-    return updatedContact;
+    res.json({
+      status: 200,
+      message: `Successfully patched a contact!`,
+      data: result.contact,
+    });
 };
 
 export const deleteContact = async (userId, contactId) => {

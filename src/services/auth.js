@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { User } from '../validation/userValidation.js';
+import { User } from '../db/user.js';
 import bcrypt from 'bcrypt';
 import handlebars from 'handlebars';
 import jwt from 'jsonwebtoken';

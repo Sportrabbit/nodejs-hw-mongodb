@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
-import { User } from '../validation/userValidation.js';
+import { User } from '../db/user.js';
 import { logoutUser } from '../services/auth.js';
 import { Session } from '../validation/sessionValidation.js';
 import { requestResetToken } from '../services/auth.js';

@@ -98,6 +98,7 @@ export const updateContactControllers = async (req, res, next) => {
         }
 
         const contact = await Contact.findOne({ _id: contactId, userId });
+        console.log('Found contact:', contact);
 
         if (!contact) {
             console.log('Contact not found:', contactId);
