@@ -1,5 +1,5 @@
 import Contact from '../db/contact.js';
-import createHttpError from 'http-errors';
+// import createHttpError from 'http-errors';
 import { saveFile } from '../utils/saveFile.js';
 
 export const getAllContacts = async (page, perPage, sortBy, sortOrder, filter) => {
@@ -51,20 +51,13 @@ export const createContact = async ({ photo, ...contactData }, userId) => {
     };
 };
 
-export const updateContact = async (req, res, next) => {
-    const { contactId } = req.params;
-    const result = await updateContact(contactId, req.body);
-
-    if (!result) {
-      next(createHttpError(404, 'Contact not found'));
-      return;
-    }
-
-    res.json({
-      status: 200,
-      message: `Successfully patched a contact!`,
-      data: result.contact,
-    });
+export const updateContact = async (userId, contactId, updateData) => {
+    const contact = await Contact.findOneAndUpdate(
+        { _id: contactId, userId },
+        { $set: updateData },
+        { new: true }
+    );
+    return contact;
 };
 
 export const deleteContact = async (userId, contactId) => {

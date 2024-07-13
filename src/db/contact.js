@@ -25,6 +25,11 @@ const contactSchema = new mongoose.Schema({
     },
     photo: {
         type: String
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 }, {
     timestamps: true // Додає поля createdAt і updatedAt

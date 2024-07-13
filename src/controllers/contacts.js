@@ -102,7 +102,7 @@ export const updateContactControllers = async (req, res, next) => {
     try {
         console.log('Entering updateContactControllers');
 
-        const contactId = req.params.contactId;
+        const { contactId } = req.params;
         const { name, phoneNumber, email, isFavourite, contactType } = req.body;
         const userId = req.user._id;
         const file = req.file;
@@ -132,8 +132,12 @@ export const updateContactControllers = async (req, res, next) => {
         }
 
         const updateData = { name, phoneNumber, email, isFavourite, contactType };
+        if (file) {
+            updateData.photo = file.path; // Збереження шляху до файлу в updateData
+        }
+
         console.log('Update Data before file processing:', updateData);
-        const updatedContact = await updateContact(userId, contactId, updateData, file);
+        const updatedContact = await updateContact(userId, contactId, updateData);
         console.log('Update Data after file processing:', updateData);
 
         if (!updatedContact) {
