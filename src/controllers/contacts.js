@@ -4,24 +4,11 @@ import { updateContactSchema } from '../validation/contactValidation.js';
 import { getAllContacts, getContactById, createContact, updateContact, deleteContact } from '../services/contacts.js';
 import Contact from '../db/contact.js';
 
-const VALID_SORT_FIELDS = ['name', 'email', 'phoneNumber']; // Додайте всі поля, за якими може виконуватися сортування
-const VALID_SORT_ORDERS = ['asc', 'desc'];
-
 export const getAllContactsControllers = async (req, res, next) => {
     try {
         const userId = req.user._id;
         const { page = '1', perPage = '10', sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
 
-        // Перевірка параметрів сортування
-        if (!VALID_SORT_FIELDS.includes(sortBy)) {
-            throw CreateError(400, `Invalid sort field: ${sortBy}`);
-        }
-
-        if (!VALID_SORT_ORDERS.includes(sortOrder)) {
-            throw CreateError(400, `Invalid sort order: ${sortOrder}`);
-        }
-
-        // Перетворення параметрів на числа та перевірка їх валідності
         const pageNum = parseInt(page, 10);
         const perPageNum = parseInt(perPage, 10);
 
@@ -32,6 +19,8 @@ export const getAllContactsControllers = async (req, res, next) => {
         const filter = { userId };
         if (type) filter.contactType = type;
         if (isFavourite !== undefined) filter.isFavourite = isFavourite === 'true';
+
+        console.log('Filter:', filter);
 
         const result = await getAllContacts(pageNum, perPageNum, sortBy, sortOrder, filter);
 
@@ -52,6 +41,8 @@ export const getAllContactsControllers = async (req, res, next) => {
         next(error);
     }
 };
+
+
 
 
 export const getContactByIdControllers = async (req, res, next) => {

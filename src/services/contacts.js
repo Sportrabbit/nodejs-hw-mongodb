@@ -4,27 +4,31 @@ import { saveFile } from '../utils/saveFile.js';
 
 export const getAllContacts = async (page, perPage, sortBy, sortOrder, filter) => {
     const skip = (page - 1) * perPage;
+    const sort = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+
+    console.log('Filter in getAllContacts:', filter);
 
     const contacts = await Contact.find(filter)
-        .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+        .sort(sort)
         .skip(skip)
         .limit(perPage);
 
+    console.log('Contacts found:', contacts);
+
     const totalItems = await Contact.countDocuments(filter);
-    const totalPages = Math.ceil(totalItems / perPage);
-    const hasPreviousPage = page > 1;
-    const hasNextPage = page < totalPages;
 
     return {
         data: contacts,
         page,
         perPage,
         totalItems,
-        totalPages,
-        hasPreviousPage,
-        hasNextPage,
+        totalPages: Math.ceil(totalItems / perPage),
+        hasPreviousPage: page > 1,
+        hasNextPage: page * perPage < totalItems,
     };
 };
+
+
 
 export const getContactById = async (userId, contactId) => {
     const contact = await Contact.findOne({ _id: contactId, userId });
