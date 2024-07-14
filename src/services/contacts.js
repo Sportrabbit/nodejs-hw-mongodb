@@ -28,8 +28,6 @@ export const getAllContacts = async (page, perPage, sortBy, sortOrder, filter) =
     };
 };
 
-
-
 export const getContactById = async (userId, contactId) => {
     const contact = await Contact.findOne({ _id: contactId, userId });
     return contact;
@@ -55,7 +53,12 @@ export const createContact = async ({ photo, ...contactData }, userId) => {
     };
 };
 
-export const updateContact = async (userId, contactId, updateData) => {
+export const updateContact = async (userId, contactId, updateData, file) => {
+    if (file) {
+        const photoUrl = await saveFile(file);
+        updateData.photoUrl = photoUrl; // Додаємо URL фото до updateData
+    }
+
     const contact = await Contact.findOneAndUpdate(
         { _id: contactId, userId },
         { $set: updateData },

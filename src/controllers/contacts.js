@@ -42,9 +42,6 @@ export const getAllContactsControllers = async (req, res, next) => {
     }
 };
 
-
-
-
 export const getContactByIdControllers = async (req, res, next) => {
     try {
         const contactId = req.params.contactId;
