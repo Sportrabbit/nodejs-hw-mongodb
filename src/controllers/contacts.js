@@ -125,7 +125,7 @@ export const updateContactControllers = async (req, res, next) => {
         }
 
         console.log('Update Data before file processing:', updateData);
-        const updatedContact = await updateContact(userId, contactId, updateData);
+        const updatedContact = await updateContact(userId, contactId, updateData, file);
         console.log('Update Data after file processing:', updateData);
 
         if (!updatedContact) {
