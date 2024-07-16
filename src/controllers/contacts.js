@@ -121,7 +121,7 @@ export const updateContactControllers = async (req, res, next) => {
 
         const updateData = { name, phoneNumber, email, isFavourite, contactType };
         if (file) {
-            updateData.photo = file.path; // Збереження шляху до файлу в updateData
+            updateData.photo = file.path;
         }
 
         console.log('Update Data before file processing:', updateData);
