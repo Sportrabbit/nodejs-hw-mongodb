@@ -32,7 +32,7 @@ const contactSchema = new mongoose.Schema({
         required: true
     }
 }, {
-    timestamps: true // Додає поля createdAt і updatedAt
+    timestamps: true
 });
 
 const Contact = mongoose.model('Contact', contactSchema);

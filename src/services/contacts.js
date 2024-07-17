@@ -53,10 +53,10 @@ export const createContact = async ({ photo, ...contactData }, userId) => {
     };
 };
 
-export const updateContact = async (userId, contactId, updateData, file) => {
+export const updatedContact = async (userId, contactId, updateData, file) => {
     if (file) {
         const photoUrl = await saveFile(file);
-        updateData.photoUrl = photoUrl;
+        updateData.photo = photoUrl;
     }
 
     const contact = await Contact.findOneAndUpdate(
@@ -64,7 +64,7 @@ export const updateContact = async (userId, contactId, updateData, file) => {
         { $set: updateData },
         { new: true }
     );
-    return contact;
+     return contact;
 };
 
 export const deleteContact = async (userId, contactId) => {
