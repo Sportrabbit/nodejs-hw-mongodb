@@ -53,7 +53,7 @@ export const createContact = async ({ photo, ...contactData }, userId) => {
     };
 };
 
-export const updatedContact = async (userId, contactId, updateData, file) => {
+export const updateContact = async (userId, contactId, updateData, file) => {
     if (file) {
         const photoUrl = await saveFile(file);
         updateData.photo = photoUrl;
